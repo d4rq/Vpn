@@ -1,15 +1,25 @@
 using System.Diagnostics;
+using Serilog;
+using Vpn.Core.Abstractions;
+using Vpn.WgHandler;
 using Vpn.WgHandler.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+services.AddSingleton<IPeerService, PeerService>();
 
 services.AddControllers();
 services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+WireGuard.EnsureWgInstalled(); 
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -19,17 +29,4 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", WireGuard.EnsureWgInstalled)
-    .WithName("GetWeatherForecast");
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

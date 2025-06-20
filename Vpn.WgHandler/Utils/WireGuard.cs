@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Serilog;
 
 namespace Vpn.WgHandler.Utils;
 
@@ -6,9 +7,13 @@ public static class WireGuard
 {
     public static void EnsureWgInstalled()
     {
+        Log.Information("Checking WG Installation");
+
         if (OperatingSystem.IsLinux())
             EnsureInstalledOnLinux();
         else EnsureInstalledOnWindows();
+        
+        Log.Information("Wg Installed");
     }
 
     private static void EnsureInstalledOnLinux()
@@ -29,6 +34,7 @@ public static class WireGuard
 
         if (process.ExitCode != 0)
         {
+            Log.Warning("Wg is not installed. Installing...");
             var installationProcess = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -62,6 +68,7 @@ public static class WireGuard
 
         if (process.ExitCode != 0)
         {
+            Log.Warning("Wg is not installed. Installing...");
             var installationProcess = new Process
             {
                 StartInfo = new ProcessStartInfo
