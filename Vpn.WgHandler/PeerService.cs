@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Text;
+using System.Text.RegularExpressions;
 using Serilog;
 using Vpn.Core.Abstractions;
 using Vpn.Core.Models;
@@ -95,7 +97,21 @@ public class PeerService : IPeerService
 
     public void RemovePeer(string publicKey)
     {
-        throw new NotImplementedException();
+        // Читаем весь конфиг
+        string configContent = File.ReadAllText(_configPath);
+        
+        // Регулярное выражение для поиска секции пира
+        string pattern = $@"(\[Peer\][^\[]*?PublicKey\s*=\s*{Regex.Escape(publicKey)}[^\[]*)";
+        
+        // Удаляем секцию пира
+        string newConfig = Regex.Replace(
+            configContent,
+            pattern,
+            "",
+            RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        
+        // Сохраняем изменения
+        File.WriteAllText(_configPath, newConfig, Encoding.UTF8);
     }
 
     private string GeneratePrivateKey()

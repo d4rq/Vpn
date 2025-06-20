@@ -19,4 +19,10 @@ public class TestController : ControllerBase
         [FromServices] IPeerService peerService,
         [FromBody] PeerInfo peerInfo)
         => peerService.AddPeer(peerInfo);
+    
+    [HttpDelete("peer")]
+    public void Delete(
+        [FromServices] IPeerService peerService,
+        [FromQuery] string publicKey)
+        => peerService.RemovePeer(publicKey);
 }
