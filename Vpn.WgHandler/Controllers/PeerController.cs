@@ -5,12 +5,8 @@ using Vpn.Core.Models;
 namespace Vpn.WgHandler.Controllers;
 
 [ApiController]
-public class TestController : ControllerBase
+public class PeerController : ControllerBase
 {
-    [HttpGet]
-    [Route("/test")]
-    public IActionResult Test([FromServices] IPeerService peerService) => Ok(peerService.ToString());
-
     [HttpGet("peers")]
     public List<PeerInfo> Get([FromServices] IPeerService peerService) => peerService.GetPeers();
     
@@ -25,4 +21,8 @@ public class TestController : ControllerBase
         [FromServices] IPeerService peerService,
         [FromQuery] string publicKey)
         => peerService.RemovePeer(publicKey);
+    
+    [HttpGet("publicKey")]
+    public string GetPublicKey([FromServices] IPeerService peerService)
+        => peerService.GetPublicKey();
 }

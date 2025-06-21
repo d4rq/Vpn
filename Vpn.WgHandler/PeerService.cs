@@ -113,6 +113,8 @@ public class PeerService : IPeerService
         // Сохраняем изменения
         File.WriteAllText(_configPath, newConfig, Encoding.UTF8);
     }
+    
+    public string GetPublicKey() => _publicKey;
 
     private string GeneratePrivateKey()
     {

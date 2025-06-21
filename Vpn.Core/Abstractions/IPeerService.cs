@@ -7,4 +7,5 @@ public interface IPeerService
     List<PeerInfo> GetPeers();
     void AddPeer(PeerInfo peer);
     void RemovePeer(string publicKey);
+    string GetPublicKey();
 }
